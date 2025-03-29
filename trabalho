@@ -1,0 +1,94 @@
+-- Criar o banco de dados, se não existir
+CREATE DATABASE IF NOT EXISTS tbl_mercado;
+
+-- Selecionar o banco de dados
+USE tbl_mercado;
+
+
+-- Tabela Clientes
+CREATE TABLE clientes (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY unique,
+    nome VARCHAR(100) NOT NULL,
+    cpf CHAR(11) NOT NULL UNIQUE
+);
+
+CREATE TABLE endereco(
+	rua varchar(100),
+    numero int,
+    cidade varchar(45) not null,
+    estardo varchar(45) not null,
+    cep varchar(45),
+    id_cliente int,
+    foreign key(id_cliente) references clientes(id_cliente)
+);
+
+Create TABLE email(
+	id INT auto_increment primary key unique,
+    email VARCHAR(100),
+    id_cliente INT,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+);
+
+CREATE TABLE telefone(
+	id int auto_increment primary key unique,
+    numero varchar(15),
+    id_cliente INT,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+);
+
+-- Tabela Produtos
+CREATE TABLE produtos (
+    id_produto INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    codigo_produto VARCHAR(50) NOT NULL UNIQUE,
+    preco DECIMAL(10,2) NOT NULL,
+    descricao TEXT,
+    quantidade_estoque INT NOT NULL,
+    data_validade DATE
+);
+
+-- Tabela Colaboradores
+CREATE TABLE colaboradores (
+    id_colaborador INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf CHAR(11) NOT NULL UNIQUE,
+    cargo VARCHAR(50),
+    email VARCHAR(100),
+    telefone VARCHAR(15),
+    data_contratacao DATE,
+    salario DECIMAL(10,2)
+);
+
+-- Tabela Vendas
+CREATE TABLE vendas (
+    id_venda INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT,
+    id_colaborador INT,
+    data_venda DATETIME NOT NULL,
+    valor_total DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
+    FOREIGN KEY (id_colaborador) REFERENCES colaboradores(id_colaborador)
+);
+
+-- Tabela Itens de Venda
+CREATE TABLE itens_venda (
+    id_item_venda INT AUTO_INCREMENT PRIMARY KEY,
+    id_venda INT,
+    id_produto INT,
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (id_venda) REFERENCES vendas(id_venda),
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto)
+);
+
+-- Tabela Pagamentos
+CREATE TABLE pagamentos (
+    id_pagamento INT AUTO_INCREMENT PRIMARY KEY,
+    id_venda INT,
+    tipo_pagamento VARCHAR(50),
+    valor_pago DECIMAL(10,2) NOT NULL,
+    troco DECIMAL(10,2),
+    FOREIGN KEY (id_venda) REFERENCES vendas(id_venda)
+);
+
+show tables;
